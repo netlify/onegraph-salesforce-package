@@ -1,0 +1,19 @@
+{
+  "packageDirectories": [
+    {
+      "path": "package",
+      "default": true,
+      "package": "OneGraph GraphQL Subscriptions",
+      "uninstallScript": "UninstallPackage",
+      "versionName": "v18",
+      "versionNumber": "0.18.0.0",
+      "ancestorVersion": "0.17.0.0"
+    }
+  ],
+  "namespace": "OneGraph",
+  "sfdcLoginUrl": "https://login.salesforce.com",
+  "sourceApiVersion": "47.0",
+  "packageAliases": {
+    "OneGraph GraphQL Subscriptions": "0Ho6g000000blS1CAI"
+  }
+}

@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<CustomField xmlns="http://soap.sforce.com/2006/04/metadata">
+    <fullName>EnsureSingleton__c</fullName>
+    <caseSensitive>false</caseSensitive>
+    <description
+  >Ensures that there is only one signing key in use.</description>
+    <externalId>false</externalId>
+    <label>EnsureSingleton</label>
+    <length>255</length>
+    <required>true</required>
+    <trackTrending>false</trackTrending>
+    <type>Text</type>
+    <unique>true</unique>
+</CustomField>

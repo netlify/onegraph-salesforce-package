@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<CustomField xmlns="http://soap.sforce.com/2006/04/metadata">
+    <fullName>Disable_All_Contact_Triggers__c</fullName>
+    <defaultValue>false</defaultValue>
+        <description>Disables all Apex triggers for Contact. If this is checked, then no subscriptions on Contact will be available.</description>
+    <externalId>false</externalId>
+    <inlineHelpText>Disables all Apex triggers for Contact. If this is checked, then no subscriptions on Contact will be available.</inlineHelpText>
+    <label>Disable All Contact Triggers</label>
+    <trackTrending>false</trackTrending>
+    <type>Checkbox</type>
+</CustomField>

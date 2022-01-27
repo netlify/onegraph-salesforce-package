@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<CustomField xmlns="http://soap.sforce.com/2006/04/metadata">
+    <fullName>PrivateKeySegment8__c</fullName>
+    <description
+  >Stores private key. The key is broken up into multiple segments to accommodate the maximum text field length of 255 characters.</description>
+    <externalId>false</externalId>
+    <label>PrivateKeySegment8</label>
+    <length>255</length>
+    <required>false</required>
+    <trackTrending>false</trackTrending>
+    <type>Text</type>
+    <unique>false</unique>
+</CustomField>

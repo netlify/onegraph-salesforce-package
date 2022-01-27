@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<CustomField xmlns="http://soap.sforce.com/2006/04/metadata">
+    <fullName>Disable_Case_Delete_Trigger__c</fullName>
+    <defaultValue>false</defaultValue>
+        <description>Disables the Apex trigger for Case deletes. If this is checked, then caseDeleted subscriptions will not be available.</description>
+    <externalId>false</externalId>
+    <inlineHelpText>Disables the Apex trigger for Case deletes. If this is checked, then caseDeleted subscriptions will not be available.</inlineHelpText>
+    <label>Disable Case Delete Trigger</label>
+    <trackTrending>false</trackTrending>
+    <type>Checkbox</type>
+</CustomField>

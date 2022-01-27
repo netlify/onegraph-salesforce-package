@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<CustomField xmlns="http://soap.sforce.com/2006/04/metadata">
+    <fullName>Disable_Task_Insert_Trigger__c</fullName>
+    <defaultValue>false</defaultValue>
+        <description>Disables the Apex trigger for Task inserts. If this is checked, then taskCreated subscriptions will not be available.</description>
+    <externalId>false</externalId>
+    <inlineHelpText>Disables the Apex trigger for Task inserts. If this is checked, then taskCreated subscriptions will not be available.</inlineHelpText>
+    <label>Disable Task Insert Trigger</label>
+    <trackTrending>false</trackTrending>
+    <type>Checkbox</type>
+</CustomField>

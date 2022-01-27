@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<CustomField xmlns="http://soap.sforce.com/2006/04/metadata">
+    <fullName>Signing_Key__c</fullName>
+    <businessStatus>Hidden</businessStatus>
+    <externalId>false</externalId>
+    <label>Signing Key</label>
+    <length>255</length>
+    <required>true</required>
+    <securityClassification>Internal</securityClassification>
+    <trackTrending>false</trackTrending>
+    <type>Text</type>
+    <unique>false</unique>
+</CustomField>

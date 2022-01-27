@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<CustomField xmlns="http://soap.sforce.com/2006/04/metadata">
+    <fullName>Endpoint__c</fullName>
+    <businessStatus>Hidden</businessStatus>
+    <caseSensitive>false</caseSensitive>
+    <deprecated>false</deprecated>
+    <externalId>true</externalId>
+    <label>Endpoint</label>
+    <length>255</length>
+    <required>true</required>
+    <securityClassification>Internal</securityClassification>
+    <trackTrending>false</trackTrending>
+    <type>Text</type>
+    <unique>true</unique>
+</CustomField>
