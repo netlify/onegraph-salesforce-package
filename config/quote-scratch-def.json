@@ -1,0 +1,8 @@
+{
+  "edition": "Enterprise",
+  "settings": {
+    "quoteSettings": {
+      "enableQuote": true
+    }
+  }
+}

@@ -8,12 +8,27 @@
       "versionName": "v18",
       "versionNumber": "0.18.0.0",
       "ancestorVersion": "0.17.0.0"
+    },
+    {
+      "path": "expansions/quote",
+      "package": "OneGraph GraphQL Subscriptions Quote Expansion",
+      "versionName": "v18",
+      "versionNumber": "0.18.0.0",
+      "default": false,
+      "dependencies": [
+        {
+          "package": "OneGraph GraphQL Subscriptions",
+          "subscriberPackageVersionId": "04t6g000008jkMEAAY"
+        }
+      ],
+      "definitionFile": "config/quote-scratch-def.json"
     }
   ],
   "namespace": "OneGraph",
   "sfdcLoginUrl": "https://login.salesforce.com",
   "sourceApiVersion": "47.0",
   "packageAliases": {
-    "OneGraph GraphQL Subscriptions": "0Ho6g000000blS1CAI"
+    "OneGraph GraphQL Subscriptions": "0Ho6g000000blS1CAI",
+    "OneGraph GraphQL Subscriptions Quote Expansion": "0Ho6g000000Xa2BCAS"
   }
 }

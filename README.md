@@ -92,3 +92,5 @@ sfdx force:package:version:promote -p 04t6g000008jkMEAAY
 AppExchange URL: https://appexchange.salesforce.com/appxListingDetail?listingId=a0N3A00000G0yipUAB
 
 Direct URL: https://login.salesforce.com/packaging/installPackage.apexp?p0=04t6g000008jkMEAAY
+
+Quote Expansion URL: https://login.salesforce.com/packaging/installPackage.apexp?p0=04t6g000008jlcMAAQ
