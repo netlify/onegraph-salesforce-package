@@ -3,7 +3,9 @@ public class OneGraphWebhookV1 implements Queueable, Database.AllowsCallouts {
   private String deliveryId;
   @TestVisible
   private static String transactionIdStatic;
+  private static Integer triggerIndexStatic = -1;
   private String transactionId;
+  private Integer triggerIndex;
   private String content;
   private String sobjectName;
   private String triggerType;
@@ -160,7 +162,10 @@ public class OneGraphWebhookV1 implements Queueable, Database.AllowsCallouts {
       this.shouldExecute = false;
     }
     if (this.shouldExecute) {
-      this.deliveryId = EncodingUtil.ConvertTohex(Crypto.GenerateAESKey(128));
+
+      OneGraphWebhookV1.triggerIndexStatic = OneGraphWebhookV1.triggerIndexStatic + 1;
+      this.triggerIndex = OneGraphWebhookV1.triggerIndexStatic;
+
       if (OneGraphWebhookV1.transactionIdStatic != null) {
         this.isFirstRun = false;
       } else {
@@ -169,6 +174,8 @@ public class OneGraphWebhookV1 implements Queueable, Database.AllowsCallouts {
         );
       }
       this.transactionId = OneGraphWebhookV1.transactionIdStatic;
+
+      this.deliveryId = EncodingUtil.ConvertTohex(Crypto.GenerateAESKey(128));
 
       this.content = getJsonContent(
         Trigger.new,
@@ -206,6 +213,7 @@ public class OneGraphWebhookV1 implements Queueable, Database.AllowsCallouts {
     req.setHeader('x-salesforce-trigger', triggerType);
     req.setHeader('x-salesforce-delivery-id', deliveryId);
     req.setHeader('x-salesforce-transaction-id', transactionId);
+    req.setHeader('x-salesforce-trigger-index', String.valueOf(triggerIndex));
     req.setHeader('x-salesforce-first-run', isFirstRun ? 'true' : 'false');
     req.setHeader('x-salesforce-signature', signature);
     req.setBody(content);
