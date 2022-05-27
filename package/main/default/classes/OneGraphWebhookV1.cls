@@ -117,6 +117,20 @@ public class OneGraphWebhookV1 implements Queueable, Database.AllowsCallouts {
     return (Limits.getLimitQueueableJobs() - Limits.getQueueableJobs()) > 0;
   }
 
+  private static Void cleanupTransactionMeta() {
+    Datetime now = Datetime.now();
+    Datetime cleanupThreshold = now.addMinutes(-20);
+
+    OneGraph__Transaction_Meta__c[] cleanupMeta = [
+      SELECT Id
+      FROM OneGraph__Transaction_Meta__c
+      WHERE SystemModstamp < :cleanupThreshold
+    ];
+    if (cleanupMeta.size() > 0) {
+      delete cleanupMeta;
+    }
+  }
+
   @namespaceAccessible
   public OneGraphWebhookV1(string sobjectName, System.TriggerOperation op) {
     Integer startCpu = Limits.getCpuTime();
@@ -162,8 +176,8 @@ public class OneGraphWebhookV1 implements Queueable, Database.AllowsCallouts {
       this.shouldExecute = false;
     }
     if (this.shouldExecute) {
-
-      OneGraphWebhookV1.triggerIndexStatic = OneGraphWebhookV1.triggerIndexStatic + 1;
+      OneGraphWebhookV1.triggerIndexStatic =
+        OneGraphWebhookV1.triggerIndexStatic + 1;
       this.triggerIndex = OneGraphWebhookV1.triggerIndexStatic;
 
       if (OneGraphWebhookV1.transactionIdStatic != null) {
@@ -172,8 +186,16 @@ public class OneGraphWebhookV1 implements Queueable, Database.AllowsCallouts {
         OneGraphWebhookV1.transactionIdStatic = EncodingUtil.ConvertTohex(
           Crypto.GenerateAESKey(128)
         );
+        cleanupTransactionMeta();
       }
+
       this.transactionId = OneGraphWebhookV1.transactionIdStatic;
+
+      OneGraph__Transaction_Meta__c meta = new OneGraph__Transaction_Meta__c(
+        OneGraph__Transaction_Id__c = OneGraphWebhookV1.transactionIdStatic,
+        OneGraph__Max_Trigger_Index__c = OneGraphWebhookV1.triggerIndexStatic
+      );
+      upsert meta OneGraph__Transaction_Id__c;
 
       this.deliveryId = EncodingUtil.ConvertTohex(Crypto.GenerateAESKey(128));
 
@@ -200,7 +222,11 @@ public class OneGraphWebhookV1 implements Queueable, Database.AllowsCallouts {
     Integer startCpu = Limits.getCpuTime();
     String orgId = UserInfo.getOrganizationId();
     Long timestamp = DateTime.now().getTime();
-
+    OneGraph__Transaction_Meta__c meta = [
+      SELECT OneGraph__Max_Trigger_Index__c
+      FROM OneGraph__Transaction_Meta__c
+      WHERE OneGraph__Transaction_Id__c = :transactionId
+    ];
     String signature = SigningKey.getSignature(timestamp, content);
     Http h = new Http();
     HttpRequest req = new HttpRequest();
@@ -214,11 +240,21 @@ public class OneGraphWebhookV1 implements Queueable, Database.AllowsCallouts {
     req.setHeader('x-salesforce-delivery-id', deliveryId);
     req.setHeader('x-salesforce-transaction-id', transactionId);
     req.setHeader('x-salesforce-trigger-index', String.valueOf(triggerIndex));
+    if (meta != null) {
+      req.setHeader(
+        'x-salesforce-max-trigger-index',
+        String.valueOf(meta.OneGraph__Max_Trigger_Index__c)
+      );
+    }
     req.setHeader('x-salesforce-first-run', isFirstRun ? 'true' : 'false');
     req.setHeader('x-salesforce-signature', signature);
     req.setBody(content);
     this.cpuTime = this.cpuTime + (Limits.getCpuTime() - startCpu);
     req.setHeader('x-salesforce-cpu-time', String.valueOf(this.cpuTime));
+    req.setHeader(
+      'x-salesforce-package-version',
+      OneGraphPackageVersion.versionString
+    );
     HTTPResponse res = h.send(req);
     if (res.getStatusCode() != 200) {
       System.debug(

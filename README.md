@@ -65,11 +65,12 @@ sfdx scanner:run --target package/
 
 You can run `force:package:version:create` with `--skipvalidation` to test more variations, but make sure the package you release wasn't created that way.
 
-First, update `sfdx-project.json`:
+First, update versions in `sfdx-project.json` and OneGraphPackageVersion:
 
 - Set version num to be larger than the last, e.g. 0.2.0.0
 - Set ancestorVersion to be the last released package version or people won't be able to upgrade
 - Update versionName
+- Update version and versionString in the OneGraphPackageVersion (sorry that this isn't automatic)
 
 Test that it will build
 ```
@@ -86,12 +87,12 @@ Install it in a salesforce org and make sure it works.
 # Release a package
 
 Replace 04t6g000008jkMEAAY with the package id from the last command
-sfdx force:package:version:promote -p 04t6g000008jln6AAA
+sfdx force:package:version:promote -p 04t6g000008jlnQAAQ
 
 ## Latest version install url
 
 AppExchange URL: https://appexchange.salesforce.com/appxListingDetail?listingId=a0N3A00000G0yipUAB
 
-Direct URL: https://login.salesforce.com/packaging/installPackage.apexp?p0=04t6g000008jln6AAA
+Direct URL: https://login.salesforce.com/packaging/installPackage.apexp?p0=04t6g000008jlnQAAQ
 
 Quote Expansion URL: https://login.salesforce.com/packaging/installPackage.apexp?p0=04t6g000008jlcMAAQ
