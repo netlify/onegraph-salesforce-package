@@ -5,9 +5,9 @@
       "default": true,
       "package": "OneGraph GraphQL Subscriptions",
       "uninstallScript": "UninstallPackage",
-      "versionName": "v19",
-      "versionNumber": "0.19.0.0",
-      "ancestorVersion": "0.18.0.0"
+      "versionName": "v20",
+      "versionNumber": "0.20.0.0",
+      "ancestorVersion": "0.19.0.0"
     },
     {
       "path": "expansions/quote",
