@@ -65,11 +65,12 @@ sfdx scanner:run --target package/
 
 You can run `force:package:version:create` with `--skipvalidation` to test more variations, but make sure the package you release wasn't created that way.
 
-First, update `sfdx-project.json`:
+First, update versions in `sfdx-project.json` and OneGraphPackageVersion:
 
 - Set version num to be larger than the last, e.g. 0.2.0.0
 - Set ancestorVersion to be the last released package version or people won't be able to upgrade
 - Update versionName
+- Update version and versionString in the OneGraphPackageVersion (sorry that this isn't automatic)
 
 Test that it will build
 ```

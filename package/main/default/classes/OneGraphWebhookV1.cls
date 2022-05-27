@@ -119,12 +119,13 @@ public class OneGraphWebhookV1 implements Queueable, Database.AllowsCallouts {
 
   private static Void cleanupTransactionMeta() {
     Datetime now = Datetime.now();
-    String query =
-      'Select Id from OneGraph__Transaction_Meta__c Where LastModifiedDate < ' +
-      now.formatGMT('yyyy-MM-dd\'T\'HH:mm:ss.SSSZ');
+    Datetime cleanupThreshold = now.addMinutes(-20);
 
-    OneGraph__Transaction_Meta__c[] cleanupMeta = Database.query(query);
-    // XXX: handle errors
+    OneGraph__Transaction_Meta__c[] cleanupMeta = [
+      SELECT Id
+      FROM OneGraph__Transaction_Meta__c
+      WHERE SystemModstamp < :cleanupThreshold
+    ];
     if (cleanupMeta.size() > 0) {
       delete cleanupMeta;
     }
@@ -221,12 +222,11 @@ public class OneGraphWebhookV1 implements Queueable, Database.AllowsCallouts {
     Integer startCpu = Limits.getCpuTime();
     String orgId = UserInfo.getOrganizationId();
     Long timestamp = DateTime.now().getTime();
-    String query =
-      'Select OneGraph__Max_Trigger_Index__c From OneGraph__Transaction_Meta__c Where OneGraph__Transaction_Id__c = \'' +
-      this.transactionId +
-      '\'';
-    System.debug(query);
-    OneGraph__Transaction_Meta__c meta = Database.query(query);
+    OneGraph__Transaction_Meta__c meta = [
+      SELECT OneGraph__Max_Trigger_Index__c
+      FROM OneGraph__Transaction_Meta__c
+      WHERE OneGraph__Transaction_Id__c = :transactionId
+    ];
     String signature = SigningKey.getSignature(timestamp, content);
     Http h = new Http();
     HttpRequest req = new HttpRequest();
@@ -251,6 +251,10 @@ public class OneGraphWebhookV1 implements Queueable, Database.AllowsCallouts {
     req.setBody(content);
     this.cpuTime = this.cpuTime + (Limits.getCpuTime() - startCpu);
     req.setHeader('x-salesforce-cpu-time', String.valueOf(this.cpuTime));
+    req.setHeader(
+      'x-salesforce-package-version',
+      OneGraphPackageVersion.versionString
+    );
     HTTPResponse res = h.send(req);
     if (res.getStatusCode() != 200) {
       System.debug(
