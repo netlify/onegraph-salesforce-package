@@ -127,7 +127,21 @@ public class OneGraphWebhookV1 implements Queueable, Database.AllowsCallouts {
       WHERE SystemModstamp < :cleanupThreshold
     ];
     if (cleanupMeta.size() > 0) {
-      delete cleanupMeta;
+      try {
+        delete cleanupMeta;
+      } catch (DmlException e) {
+        if (e.getDmlType(0) != StatusCode.ENTITY_IS_DELETED) {
+          System.debug(
+            LoggingLevel.ERROR,
+            'Error cleaning up metadata ' + e.getMessage()
+          );
+        }
+      } catch (Exception e) {
+        System.debug(
+          LoggingLevel.ERROR,
+          'Error cleaning up metadata ' + e.getMessage()
+        );
+      }
     }
   }
 

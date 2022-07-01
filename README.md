@@ -86,13 +86,13 @@ Install it in a salesforce org and make sure it works.
 
 # Release a package
 
-Replace 04t6g000008jkMEAAY with the package id from the last command
-sfdx force:package:version:promote -p 04t6g000008jlnQAAQ
+Replace 04t6g000008jlu7AAA with the package id from the last command
+sfdx force:package:version:promote -p 04t6g000008jlu7AAA
 
 ## Latest version install url
 
 AppExchange URL: https://appexchange.salesforce.com/appxListingDetail?listingId=a0N3A00000G0yipUAB
 
-Direct URL: https://login.salesforce.com/packaging/installPackage.apexp?p0=04t6g000008jlnQAAQ
+Direct URL: https://login.salesforce.com/packaging/installPackage.apexp?p0=04t6g000008jlu7AAA
 
 Quote Expansion URL: https://login.salesforce.com/packaging/installPackage.apexp?p0=04t6g000008jlcMAAQ
