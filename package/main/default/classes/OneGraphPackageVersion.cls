@@ -1,7 +1,7 @@
 @RestResource(urlMapping='/subscriptions-package-version')
 global class OneGraphPackageVersion {
-  global static Version version = new Version(0, 21, 0);
-  global static String versionString = 'v21';
+  global static Version version = new Version(0, 22, 0);
+  global static String versionString = 'v22';
 
   @HttpGet
   global static void doGet() {

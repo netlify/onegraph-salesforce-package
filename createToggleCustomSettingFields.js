@@ -74,6 +74,7 @@ const sobjects = [
   'Lead',
   'Opportunity',
   'Task',
+  'User',
 ];
 
 const triggers = ['insert', 'update', 'delete', 'undelete'];
