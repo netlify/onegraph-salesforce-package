@@ -10,7 +10,8 @@ private class OneGraphToggleSettingsTest {
     'FeedItem',
     'Lead',
     'Opportunity',
-    'Task'
+    'Task',
+    'User'
   };
   private static List<String> triggerTypes = new List<String>{
     'insert',

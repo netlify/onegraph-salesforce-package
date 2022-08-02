@@ -65,8 +65,8 @@ function disableAllFileName(sobject) {
 
 const sobjects = [
   'Account',
-  'CaseComment',
   'Case',
+  'CaseComment',
   'Contact',
   'Event',
   'FeedComment',
@@ -78,6 +78,143 @@ const sobjects = [
 ];
 
 const triggers = ['insert', 'update', 'delete', 'undelete'];
+
+const testList = sobjects.map((sobject) => `    '${sobject}'`).join(',\n');
+
+const toggleSettingsTestBody = `@isTest
+private class OneGraphToggleSettingsTest {
+  private static List<String> sobjects = new List<String>{
+${testList}
+  };
+  private static List<String> triggerTypes = new List<String>{
+    'insert',
+    'update',
+    'delete',
+    'undelete'
+  };
+
+  @isTest
+  static void allDisabledForSobjectDefaultsToFalse() {
+    OneGraph__TriggerToggle__c triggerToggles = OneGraph__TriggerToggle__c.getInstance();
+
+    for (String sobjectName : sobjects) {
+      System.assertEquals(
+        OneGraphToggleSettings.allDisabledForSobject(
+          triggerToggles,
+          sobjectName
+        ),
+        false,
+        'incorrect default'
+      );
+    }
+  }
+
+  @isTest
+  static void triggerDisabledForSobjectDefaultsToFalse() {
+    OneGraph__TriggerToggle__c triggerToggles = OneGraph__TriggerToggle__c.getInstance();
+
+    for (String sobjectName : sobjects) {
+      for (String triggerType : triggerTypes) {
+        System.assertEquals(
+          OneGraphToggleSettings.triggerDisabledForSobject(
+            triggerToggles,
+            sobjectName,
+            triggerType
+          ),
+          false,
+          'incorrect default'
+        );
+      }
+    }
+  }
+}`;
+
+const allDisabledForSobject = sobjects
+  .map((sobject) => {
+    return `      when '${sobject}' {
+        return triggerToggles.Disable_All_${sobject}_Triggers__c;
+      }`;
+  })
+  .join('\n');
+
+const triggerDisabledForSobject = sobjects
+  .map((sobject) => {
+    return `      when '${sobject}' {
+        switch on triggerType {
+          when 'insert' {
+            return triggerToggles.Disable_${sobject}_Insert_Trigger__c;
+          }
+          when 'update' {
+            return triggerToggles.Disable_${sobject}_Update_Trigger__c;
+          }
+          when 'delete' {
+            return triggerToggles.Disable_${sobject}_Delete_Trigger__c;
+          }
+          when 'undelete' {
+            return triggerToggles.Disable_${sobject}_Undelete_Trigger__c;
+          }
+          when else {
+            return false;
+          }
+        }
+      }`;
+  })
+  .join('\n');
+
+const toggleSettingsBody = `@namespaceAccessible
+public without sharing class OneGraphToggleSettings {
+  @TestVisible
+  private static Boolean allDisabledForSobject(
+    OneGraph__TriggerToggle__c triggerToggles,
+    String sobjectName
+  ) {
+    switch on sobjectName {
+${allDisabledForSobject}
+      when else {
+        return false;
+      }
+    }
+  }
+
+  @TestVisible
+  private static Boolean triggerDisabledForSobject(
+    OneGraph__TriggerToggle__c triggerToggles,
+    String sobjectName,
+    String triggerType
+  ) {
+    switch on sobjectName {
+${triggerDisabledForSobject}
+      when else {
+        return false;
+      }
+    }
+  }
+
+  @namespaceAccessible
+  public static Boolean shouldExecuteForTrigger(
+    String sobjectName,
+    String triggerType,
+    String userId
+  ) {
+    OneGraph__TriggerToggle__c triggerToggles = OneGraph__TriggerToggle__c.getInstance(
+      userId
+    );
+
+    if (triggerToggles.Disable_All_Triggers__c) {
+      return false;
+    }
+
+    if (allDisabledForSobject(triggerToggles, sobjectName)) {
+      return false;
+    }
+
+    if (triggerDisabledForSobject(triggerToggles, sobjectName, triggerType)) {
+      return false;
+    }
+
+    return true;
+  }
+}`;
 
 function main() {
   for (sobject of sobjects) {
@@ -97,6 +234,14 @@ function main() {
       );
     }
   }
+  fs.writeFileSync(
+    'package/main/default/classes/OneGraphToggleSettingsTest.cls',
+    toggleSettingsTestBody,
+  );
+  fs.writeFileSync(
+    'package/main/default/classes/OneGraphToggleSettings.cls',
+    toggleSettingsBody,
+  );
 }
 
 if (require.main === module) {

@@ -36,6 +36,9 @@ public without sharing class OneGraphToggleSettings {
       when 'Task' {
         return triggerToggles.Disable_All_Task_Triggers__c;
       }
+      when 'User' {
+        return triggerToggles.Disable_All_User_Triggers__c;
+      }
       when else {
         return false;
       }
@@ -220,7 +223,7 @@ public without sharing class OneGraphToggleSettings {
           }
         }
       }
-       when 'Task' {
+      when 'Task' {
         switch on triggerType {
           when 'insert' {
             return triggerToggles.Disable_Task_Insert_Trigger__c;
@@ -238,7 +241,26 @@ public without sharing class OneGraphToggleSettings {
             return false;
           }
         }
-      }     
+      }
+      when 'User' {
+        switch on triggerType {
+          when 'insert' {
+            return triggerToggles.Disable_User_Insert_Trigger__c;
+          }
+          when 'update' {
+            return triggerToggles.Disable_User_Update_Trigger__c;
+          }
+          when 'delete' {
+            return triggerToggles.Disable_User_Delete_Trigger__c;
+          }
+          when 'undelete' {
+            return triggerToggles.Disable_User_Undelete_Trigger__c;
+          }
+          when else {
+            return false;
+          }
+        }
+      }
       when else {
         return false;
       }
