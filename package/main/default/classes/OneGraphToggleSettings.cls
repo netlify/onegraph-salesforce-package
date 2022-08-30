@@ -291,4 +291,55 @@ public without sharing class OneGraphToggleSettings {
 
     return true;
   }
+
+  @namespaceAccessible
+  public static Void initWithAllDisabled() {
+    OneGraph__TriggerToggle__c triggerToggles = new OneGraph__TriggerToggle__c();
+    triggerToggles.Disable_Account_Insert_Trigger__c = true;
+    triggerToggles.Disable_Account_Update_Trigger__c = true;
+    triggerToggles.Disable_Account_Delete_Trigger__c = true;
+    triggerToggles.Disable_Account_Undelete_Trigger__c = true;
+    triggerToggles.Disable_Case_Insert_Trigger__c = true;
+    triggerToggles.Disable_Case_Update_Trigger__c = true;
+    triggerToggles.Disable_Case_Delete_Trigger__c = true;
+    triggerToggles.Disable_Case_Undelete_Trigger__c = true;
+    triggerToggles.Disable_CaseComment_Insert_Trigger__c = true;
+    triggerToggles.Disable_CaseComment_Update_Trigger__c = true;
+    triggerToggles.Disable_CaseComment_Delete_Trigger__c = true;
+    triggerToggles.Disable_CaseComment_Undelete_Trigger__c = true;
+    triggerToggles.Disable_Contact_Insert_Trigger__c = true;
+    triggerToggles.Disable_Contact_Update_Trigger__c = true;
+    triggerToggles.Disable_Contact_Delete_Trigger__c = true;
+    triggerToggles.Disable_Contact_Undelete_Trigger__c = true;
+    triggerToggles.Disable_Event_Insert_Trigger__c = true;
+    triggerToggles.Disable_Event_Update_Trigger__c = true;
+    triggerToggles.Disable_Event_Delete_Trigger__c = true;
+    triggerToggles.Disable_Event_Undelete_Trigger__c = true;
+    triggerToggles.Disable_FeedComment_Insert_Trigger__c = true;
+    triggerToggles.Disable_FeedComment_Update_Trigger__c = true;
+    triggerToggles.Disable_FeedComment_Delete_Trigger__c = true;
+    triggerToggles.Disable_FeedComment_Undelete_Trigger__c = true;
+    triggerToggles.Disable_FeedItem_Insert_Trigger__c = true;
+    triggerToggles.Disable_FeedItem_Update_Trigger__c = true;
+    triggerToggles.Disable_FeedItem_Delete_Trigger__c = true;
+    triggerToggles.Disable_FeedItem_Undelete_Trigger__c = true;
+    triggerToggles.Disable_Lead_Insert_Trigger__c = true;
+    triggerToggles.Disable_Lead_Update_Trigger__c = true;
+    triggerToggles.Disable_Lead_Delete_Trigger__c = true;
+    triggerToggles.Disable_Lead_Undelete_Trigger__c = true;
+    triggerToggles.Disable_Opportunity_Insert_Trigger__c = true;
+    triggerToggles.Disable_Opportunity_Update_Trigger__c = true;
+    triggerToggles.Disable_Opportunity_Delete_Trigger__c = true;
+    triggerToggles.Disable_Opportunity_Undelete_Trigger__c = true;
+    triggerToggles.Disable_Task_Insert_Trigger__c = true;
+    triggerToggles.Disable_Task_Update_Trigger__c = true;
+    triggerToggles.Disable_Task_Delete_Trigger__c = true;
+    triggerToggles.Disable_Task_Undelete_Trigger__c = true;
+    triggerToggles.Disable_User_Insert_Trigger__c = true;
+    triggerToggles.Disable_User_Update_Trigger__c = true;
+    triggerToggles.Disable_User_Delete_Trigger__c = true;
+    triggerToggles.Disable_User_Undelete_Trigger__c = true;
+
+    insert triggerToggles;
+  }
 }

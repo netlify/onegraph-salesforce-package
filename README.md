@@ -59,6 +59,15 @@ sfdx plugins:install @salesforce/sfdx-scanner
 sfdx scanner:run --target package/
 ```
 
+### Adding a new SObject
+
+Requirements:
+  1. The SObject must be available in a default organization
+     a. The `expansions` directory allows us to create expansion packages that adding custom SObjects
+  2. Run `yarn create-toggle-custom-setting-fields`
+  3. Update `SalesforceSubscriptionHelpers.supportsTriggerToggle` in the oneserve codebase
+  4. Update the postinstall script to disable the toggles during an upgrade
+
 ### Create new beta package
 
 **be sure this will work, because we can only do it 5 times a day\***
@@ -74,12 +83,12 @@ First, update versions in `sfdx-project.json` and OneGraphPackageVersion:
 
 Test that it will build
 ```
-sfdx force:package:version:create --package "OneGraph GraphQL Subscriptions" --skipvalidation --installationkeybypass -v og
+sfdx force:package:version:create --package "OneGraph GraphQL Subscriptions" --skipvalidation --installationkeybypass -v og --postinstallscript PostInstallScript --uninstallscript UninstallPackage
 ```
 
 Create a beta version
 ```
-sfdx force:package:version:create --package "OneGraph GraphQL Subscriptions" --codecoverage --installationkeybypass -v og
+sfdx force:package:version:create --package "OneGraph GraphQL Subscriptions" --codecoverage --installationkeybypass -v og --postinstallscript PostInstallScript --uninstallscript UninstallPackage
 ```
 Install it in a salesforce org and make sure it works.
 

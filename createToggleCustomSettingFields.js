@@ -161,6 +161,15 @@ const triggerDisabledForSobject = sobjects
   })
   .join('\n');
 
+const setAllFieldsToDisabled = sobjects
+  .map((sobject) => {
+    return `    triggerToggles.Disable_${sobject}_Insert_Trigger__c = true;
+    triggerToggles.Disable_${sobject}_Update_Trigger__c = true;
+    triggerToggles.Disable_${sobject}_Delete_Trigger__c = true;
+    triggerToggles.Disable_${sobject}_Undelete_Trigger__c = true;`;
+  })
+  .join('\n');
+
 const toggleSettingsBody = `@namespaceAccessible
 public without sharing class OneGraphToggleSettings {
   @TestVisible
@@ -211,8 +220,15 @@ ${triggerDisabledForSobject}
     if (triggerDisabledForSobject(triggerToggles, sobjectName, triggerType)) {
       return false;
     }
-
     return true;
+  }
+
+  @namespaceAccessible
+  public static Void initWithAllDisabled() {
+    OneGraph__TriggerToggle__c triggerToggles = new OneGraph__TriggerToggle__c();
+${setAllFieldsToDisabled}
+
+    insert triggerToggles;
   }
 }`;
 
@@ -242,6 +258,11 @@ function main() {
     'package/main/default/classes/OneGraphToggleSettings.cls',
     toggleSettingsBody,
   );
+  console.warn(
+    'Make sure SalesforceSubscriptionHelpers.supportsTriggerToggle has all sobjects',
+  );
+  console.warn(JSON.stringify(sobjects, null, 2));
+  console.warn('Update the postinstall script to disable the new sobjects');
 }
 
 if (require.main === module) {
