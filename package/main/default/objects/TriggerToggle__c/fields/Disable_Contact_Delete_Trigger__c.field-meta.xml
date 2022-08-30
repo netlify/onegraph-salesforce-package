@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <CustomField xmlns="http://soap.sforce.com/2006/04/metadata">
     <fullName>Disable_Contact_Delete_Trigger__c</fullName>
-    <defaultValue>false</defaultValue>
+    <defaultValue>true</defaultValue>
         <description>Disables the Apex trigger for Contact deletes. If this is checked, then contactDeleted subscriptions will not be available.</description>
     <externalId>false</externalId>
     <inlineHelpText>Disables the Apex trigger for Contact deletes. If this is checked, then contactDeleted subscriptions will not be available.</inlineHelpText>

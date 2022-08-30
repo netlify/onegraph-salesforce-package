@@ -25,6 +25,7 @@ public class OneGraphWebhookV1 implements Queueable, Database.AllowsCallouts {
   // shouldn't do any DML operations to avoid mixed_dml_operations errors
   // https://developer.salesforce.com/docs/atlas.en-us.apexcode.meta/apexcode/apex_dml_non_mix_sobjects.htm
   private Boolean isSetupObject = false;
+  private String triggerFilterError;
 
   @TestVisible
   private static Void writeBool(
@@ -123,7 +124,7 @@ public class OneGraphWebhookV1 implements Queueable, Database.AllowsCallouts {
 
   private static Void cleanupTransactionMeta() {
     Datetime now = Datetime.now();
-    Datetime cleanupThreshold = now.addMinutes(-20);
+    Datetime cleanupThreshold = now.addMinutes(-1);
 
     OneGraph__Transaction_Meta__c[] cleanupMeta = [
       SELECT Id
@@ -160,6 +161,7 @@ public class OneGraphWebhookV1 implements Queueable, Database.AllowsCallouts {
     Integer startCpu = Limits.getCpuTime();
     this.triggerType = getTriggerType(op);
     this.sobjectName = sobjectName;
+
     if (OneGraphWebhookV1.isFinalExecution) {
       System.debug(
         LoggingLevel.WARN,
@@ -200,42 +202,52 @@ public class OneGraphWebhookV1 implements Queueable, Database.AllowsCallouts {
       this.shouldExecute = false;
     }
     if (this.shouldExecute) {
-      this.isSetupObject = checkIsSetupObject(sobjectName);
-
-      if (OneGraphWebhookV1.transactionIdStatic != null) {
-        this.isFirstRun = false;
-      } else {
-        OneGraphWebhookV1.transactionIdStatic = EncodingUtil.ConvertTohex(
-          Crypto.GenerateAESKey(128)
-        );
-        if (!this.isSetupObject) {
-          cleanupTransactionMeta();
-        }
-      }
-
-      this.transactionId = OneGraphWebhookV1.transactionIdStatic;
-
-      // Avoids mixed dml errors.
-      if (!this.isSetupObject) {
-        OneGraphWebhookV1.triggerIndexStatic =
-          OneGraphWebhookV1.triggerIndexStatic + 1;
-        this.triggerIndex = OneGraphWebhookV1.triggerIndexStatic;
-        OneGraph__Transaction_Meta__c meta = new OneGraph__Transaction_Meta__c(
-          OneGraph__Transaction_Id__c = OneGraphWebhookV1.transactionIdStatic,
-          OneGraph__Max_Trigger_Index__c = OneGraphWebhookV1.triggerIndexStatic
-        );
-        upsert meta OneGraph__Transaction_Id__c;
-      }
-
-      this.deliveryId = EncodingUtil.ConvertTohex(Crypto.GenerateAESKey(128));
-
-      this.content = getJsonContent(
-        Trigger.new,
+      TriggerFilter.FilteredTrigger filteredTrigger = TriggerFilter.filterTrigger(
         Trigger.old,
+        Trigger.new,
         Trigger.size,
-        sobjectName,
-        triggerType
+        sobjectName
       );
+
+      this.triggerFilterError = filteredTrigger.error;
+
+      if (filteredTrigger.size == 0) {
+        this.shouldExecute = false;
+      } else {
+        this.content = getJsonContent(
+          filteredTrigger.newFiltered,
+          filteredTrigger.oldFiltered,
+          filteredTrigger.size,
+          sobjectName,
+          triggerType
+        );
+
+        this.isSetupObject = checkIsSetupObject(sobjectName);
+
+        if (OneGraphWebhookV1.transactionIdStatic != null) {
+          this.isFirstRun = false;
+        } else {
+          OneGraphWebhookV1.transactionIdStatic = EncodingUtil.ConvertTohex(
+            Crypto.GenerateAESKey(128)
+          );
+        }
+
+        this.transactionId = OneGraphWebhookV1.transactionIdStatic;
+
+        // Avoids mixed dml errors.
+        if (!this.isSetupObject) {
+          OneGraphWebhookV1.triggerIndexStatic =
+            OneGraphWebhookV1.triggerIndexStatic + 1;
+          this.triggerIndex = OneGraphWebhookV1.triggerIndexStatic;
+          OneGraph__Transaction_Meta__c meta = new OneGraph__Transaction_Meta__c(
+            OneGraph__Transaction_Id__c = OneGraphWebhookV1.transactionIdStatic,
+            OneGraph__Max_Trigger_Index__c = OneGraphWebhookV1.triggerIndexStatic
+          );
+          upsert meta OneGraph__Transaction_Id__c;
+        }
+
+        this.deliveryId = EncodingUtil.ConvertTohex(Crypto.GenerateAESKey(128));
+      }
     }
     this.cpuTime = Limits.getCpuTime() - startCpu;
   }
@@ -260,6 +272,7 @@ public class OneGraphWebhookV1 implements Queueable, Database.AllowsCallouts {
     req.setMethod('POST');
     req.setHeader('Content-Type', 'application/json');
     req.setHeader('x-salesforce-organization-id', orgId);
+    req.setHeader('x-salesforce-attempts', String.valueOf(attempts));
     req.setHeader('x-salesforce-sobject-name', sobjectName);
     req.setHeader('x-salesforce-trigger', triggerType);
     req.setHeader('x-salesforce-delivery-id', deliveryId);
@@ -289,6 +302,12 @@ public class OneGraphWebhookV1 implements Queueable, Database.AllowsCallouts {
       'x-salesforce-package-version',
       OneGraphPackageVersion.versionString
     );
+    if (this.triggerFilterError != null) {
+      req.setHeader(
+        'x-salesforce-trigger-filter-error',
+        this.triggerFilterError.left(255)
+      );
+    }
     HTTPResponse res = h.send(req);
     if (res.getStatusCode() != 200) {
       System.debug(
@@ -305,6 +324,9 @@ public class OneGraphWebhookV1 implements Queueable, Database.AllowsCallouts {
       CalloutException e = new CalloutException();
       e.setMessage(webhookErrorMessage);
       throw e;
+    }
+    if (triggerIndex == 0 && attempts == 1) {
+      cleanupTransactionMeta();
     }
   }
 

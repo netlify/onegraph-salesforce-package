@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <CustomField xmlns="http://soap.sforce.com/2006/04/metadata">
     <fullName>Disable_User_Update_Trigger__c</fullName>
-    <defaultValue>false</defaultValue>
+    <defaultValue>true</defaultValue>
         <description>Disables the Apex trigger for User updates. If this is checked, then userUpdated subscriptions will not be available.</description>
     <externalId>false</externalId>
     <inlineHelpText>Disables the Apex trigger for User updates. If this is checked, then userUpdated subscriptions will not be available.</inlineHelpText>

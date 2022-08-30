@@ -30,7 +30,7 @@ function xmlBody(trigger, sobject) {
   return `<?xml version="1.0" encoding="UTF-8"?>
 <CustomField xmlns="http://soap.sforce.com/2006/04/metadata">
     <fullName>Disable_${sobject}_${capitalize(trigger)}_Trigger__c</fullName>
-    <defaultValue>false</defaultValue>
+    <defaultValue>true</defaultValue>
         <description>${desc}</description>
     <externalId>false</externalId>
     <inlineHelpText>${desc}</inlineHelpText>
@@ -242,6 +242,10 @@ function main() {
     'package/main/default/classes/OneGraphToggleSettings.cls',
     toggleSettingsBody,
   );
+  console.warn(
+    'Make sure SalesforceSubscriptionHelpers.supportsTriggerToggle has all sobjects',
+  );
+  console.warn(JSON.stringify(sobjects, null, 2));
 }
 
 if (require.main === module) {
