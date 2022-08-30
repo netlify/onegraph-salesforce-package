@@ -124,7 +124,7 @@ public class OneGraphWebhookV1 implements Queueable, Database.AllowsCallouts {
 
   private static Void cleanupTransactionMeta() {
     Datetime now = Datetime.now();
-    Datetime cleanupThreshold = now.addMinutes(-1);
+    Datetime cleanupThreshold = now.addMinutes(-20);
 
     OneGraph__Transaction_Meta__c[] cleanupMeta = [
       SELECT Id
