@@ -254,8 +254,8 @@ private class TriggerFilterTest {
       String op = testCase[1];
       String value = testCase[2];
       Boolean expected = Boolean.valueOf(testCase[3]);
-      String testString =
-        '{"v":0,"filter":{"kind":"Leaf","filter":{"field":"' +
+      String leafString =
+        '{"kind":"Leaf","filter":{"field":"' +
         fieldOfKind.get(kind) +
         '","kind":"' +
         kind +
@@ -263,11 +263,28 @@ private class TriggerFilterTest {
         op +
         '","value":' +
         value +
-        '}]}}}';
+        '}]}}';
+      String testString = '{"v":0,"filter":' + leafString + '}';
       System.assertEquals(
         expected,
         TriggerFilter.applyFiltersFromString(o, testString),
         'Filter does not match for kind=' +
+        kind +
+        ', op=' +
+        op +
+        ', value=' +
+        value +
+        ', testString=' +
+        testString
+      );
+      String testNegateString =
+        '{"v":0,"filter":{"kind":"Not","filter":' +
+        leafString +
+        '}}';
+      System.assertEquals(
+        !expected,
+        TriggerFilter.applyFiltersFromString(o, testNegateString),
+        'Negation filter does not match for kind=' +
         kind +
         ', op=' +
         op +

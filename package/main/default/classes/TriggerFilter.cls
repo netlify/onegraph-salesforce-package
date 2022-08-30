@@ -388,6 +388,10 @@ public without sharing class TriggerFilter { // XXX: implements Database.AllowsC
         );
         return evaluateFieldFilters(sobj, fieldFilters);
       }
+      when 'Not' {
+        Map<string, Object> nextFilter = (Map<string, Object>) filter.get('filter');
+        return !evaluateFilter(sobj, nextFilter);
+      }
       when 'And' {
         List<Object> filters = (List<Object>) filter.get('filter');
         for (Object filterUntyped : filters) {
