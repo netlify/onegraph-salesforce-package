@@ -54,4 +54,54 @@ private class OneGraphToggleSettingsTest {
       }
     }
   }
+
+  @isTest
+  static void setAllForSobjectTest() {
+    OneGraph__TriggerToggle__c triggerToggles = OneGraph__TriggerToggle__c.getInstance();
+
+    for (String sobjectName : sobjects) {
+      OneGraphToggleSettings.setAllForSobject(
+        triggerToggles,
+        sobjectName.toLowerCase(),
+        true
+      );
+
+      System.assertEquals(
+        true,
+        OneGraphToggleSettings.allDisabledForSobject(
+          triggerToggles,
+          sobjectName
+        ),
+        'incorrect value after setting ' + sobjectName
+      );
+    }
+  }
+
+  @isTest
+  static void setTriggerForSobjectTest() {
+    OneGraph__TriggerToggle__c triggerToggles = OneGraph__TriggerToggle__c.getInstance();
+
+    for (String sobjectName : sobjects) {
+      for (String triggerType : triggerTypes) {
+        OneGraphToggleSettings.setTriggerForSobject(
+          triggerToggles,
+          sobjectName.toLowerCase(),
+          triggerType,
+          true
+        );
+        System.assertEquals(
+          true,
+          OneGraphToggleSettings.triggerDisabledForSobject(
+            triggerToggles,
+            sobjectName,
+            triggerType
+          ),
+          'incorrect value after setting ' +
+          sobjectName +
+          ' ' +
+          triggerType
+        );
+      }
+    }
+  }
 }

@@ -29,6 +29,7 @@ global class TriggerFilterPublic {
     return res;
   }
 
+  @TestVisible
   private class PackageVersion {
     public String versionString;
 
@@ -37,6 +38,7 @@ global class TriggerFilterPublic {
     }
   }
 
+  @TestVisible
   private class Response {
     public PackageVersion packageVersion;
     public List<Filter> filters;
