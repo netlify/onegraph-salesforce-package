@@ -129,6 +129,35 @@ ${testList}
   }
 }`;
 
+const setAllForSobject = sobjects
+  .map((sobject) => {
+    return `      when '${sobject.toLowerCase()}' {
+        triggerToggles.Disable_All_${sobject}_Triggers__c = value;
+      }`;
+  })
+  .join('\n');
+
+const setTriggerForSobject = sobjects
+  .map((sobject) => {
+    return `      when '${sobject.toLowerCase()}' {
+        switch on triggerType {
+          when 'insert' {
+            triggerToggles.Disable_${sobject}_Insert_Trigger__c = value;
+          }
+          when 'update' {
+            triggerToggles.Disable_${sobject}_Update_Trigger__c = value;
+          }
+          when 'delete' {
+            triggerToggles.Disable_${sobject}_Delete_Trigger__c = value;
+          }
+          when 'undelete' {
+            triggerToggles.Disable_${sobject}_Undelete_Trigger__c = value;
+          }
+        }
+      }`;
+  })
+  .join('\n');
+
 const allDisabledForSobject = sobjects
   .map((sobject) => {
     return `      when '${sobject}' {
@@ -230,7 +259,91 @@ ${setAllFieldsToDisabled}
 
     insert triggerToggles;
   }
-}`;
+
+  @namespaceAccessible
+  public static void setAllForSobject(
+    OneGraph__TriggerToggle__c triggerToggles,
+    String sobjectName,
+    Boolean value
+  ) {
+    switch on sobjectName {
+${setAllForSobject}
+    }
+  }
+
+  @namespaceAccessible
+  public static void setTriggerForSobject(
+    OneGraph__TriggerToggle__c triggerToggles,
+    String sobjectName,
+    String triggerType,
+    Boolean value
+  ) {
+    switch on sobjectName {
+${setTriggerForSobject}
+    }
+  }
+
+  @namespaceAccessible
+  public class SobjectSetting {
+    public Boolean disableAll;
+    public Boolean disableInsert;
+    public Boolean disableUpdate;
+    public Boolean disableDelete;
+    public Boolean disableUndelete;
+
+    public SobjectSetting(
+      Boolean disableAll,
+      Boolean disableInsert,
+      Boolean disableUpdate,
+      Boolean disableDelete,
+      Boolean disableUndelete
+    ) {
+      this.disableAll = disableAll;
+      this.disableInsert = disableInsert;
+      this.disableUpdate = disableUpdate;
+      this.disableDelete = disableDelete;
+      this.disableUndelete = disableUndelete;
+    }
+  }
+
+  @namespaceAccessible
+  public class ToggleSettings {
+    public Boolean disableAll;
+    public Map<String, SobjectSetting> bySobjectName;
+
+    public ToggleSettings(
+      Boolean disableAll,
+      Map<String, SobjectSetting> bySobjectName
+    ) {
+      this.disableAll = disableAll;
+      this.bySobjectName = bySobjectName;
+    }
+  }
+
+  @namespaceAccessible
+  public static ToggleSettings getAllSettings(
+    OneGraph__TriggerToggle__c triggerToggles
+  ) {
+    return new ToggleSettings(
+      triggerToggles.Disable_All_Triggers__c,
+      new Map<String, SobjectSetting>{
+${sobjects
+  .map(
+    (sobject) =>
+      `        '${sobject}' => new SobjectSetting(
+          triggerToggles.Disable_All_${sobject}_Triggers__c,
+          triggerToggles.Disable_${sobject}_Insert_Trigger__c,
+          triggerToggles.Disable_${sobject}_Update_Trigger__c,
+          triggerToggles.Disable_${sobject}_Delete_Trigger__c,
+          triggerToggles.Disable_${sobject}_Undelete_Trigger__c
+        )`,
+  )
+  .join(',\n')}
+      }
+    );
+  }
+}
+`;
 
 function main() {
   for (sobject of sobjects) {
