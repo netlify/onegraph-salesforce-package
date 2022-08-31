@@ -51,7 +51,7 @@ global class TriggerTogglesPublic {
   private class PutBody {
     public Boolean disableAll;
     public List<DisableAllSetting> disableAllSobjectSettings;
-    public List<Setting> settings;
+    public List<Setting> sobjectTriggerSettings;
   }
 
   private static OneGraph__TriggerToggle__c runUpdate(PutBody putBody) {
@@ -75,8 +75,8 @@ global class TriggerTogglesPublic {
       }
     }
 
-    if (putBody.settings != null) {
-      for (Setting setting : putBody.settings) {
+    if (putBody.sobjectTriggerSettings != null) {
+      for (Setting setting : putBody.sobjectTriggerSettings) {
         OneGraphToggleSettings.setTriggerForSobject(
           toggle,
           setting.sobjectName.toLowerCase(),
