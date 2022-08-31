@@ -1,5 +1,5 @@
 @RestResource(urlMapping='/trigger-toggles')
-global class TriggerTogglesPublic {
+global without sharing class TriggerTogglesPublic {
   private class PackageVersion {
     public String versionString;
 

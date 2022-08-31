@@ -1,5 +1,5 @@
 @RestResource(urlMapping='/trigger-filters')
-global class TriggerFilterPublic {
+global without sharing class TriggerFilterPublic {
   private class Filter {
     public String sobjectName;
     public String filter;
@@ -100,7 +100,7 @@ global class TriggerFilterPublic {
   @HttpDelete
   global static void doDelete() {
     RestRequest req = RestContext.request;
-    DeleteBody delteBody = (DeleteBody) JSON.deserialize(
+    DeleteBody deleteBody = (DeleteBody) JSON.deserialize(
       req.requestBody.toString(),
       DeleteBody.class
     );
@@ -108,7 +108,7 @@ global class TriggerFilterPublic {
     List<OneGraph__TriggerFilter__c> filterRows = [
       SELECT Id
       FROM OneGraph__TriggerFilter__c
-      WHERE OneGraph__SObject_Name__c IN :delteBody.sobjectNames
+      WHERE OneGraph__SObject_Name__c IN :deleteBody.sobjectNames
     ];
 
     delete filterRows;
