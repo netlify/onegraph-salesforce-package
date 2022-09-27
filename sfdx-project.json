@@ -23,6 +23,24 @@
         }
       ],
       "definitionFile": "config/quote-scratch-def.json"
+    },
+    {
+      "path": "expansions/cpq",
+      "package": "OneGraph GraphQL Subscriptions CPQ Expansion",
+      "versionName": "v24",
+      "versionNumber": "0.24.0.0",
+      "default": false,
+      "dependencies": [
+        {
+          "package": "OneGraph GraphQL Subscriptions",
+          "subscriberPackageVersionId": "04t6g000008jmIwAAI"
+        },
+        {
+          "package": "Salesforce CPQ",
+          "subscriberPackageVersionId": "04t4N000000xBe0QAE"
+        }
+      ],
+      "definitionFile": "config/cpq-scratch-def.json"
     }
   ],
   "namespace": "OneGraph",
@@ -30,6 +48,7 @@
   "sourceApiVersion": "47.0",
   "packageAliases": {
     "OneGraph GraphQL Subscriptions": "0Ho6g000000blS1CAI",
-    "OneGraph GraphQL Subscriptions Quote Expansion": "0Ho6g000000Xa2BCAS"
+    "OneGraph GraphQL Subscriptions Quote Expansion": "0Ho6g000000Xa2BCAS",
+    "OneGraph GraphQL Subscriptions CPQ Expansion": "0Ho6g000000Xa2GCAS"
   }
 }

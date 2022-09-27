@@ -105,3 +105,32 @@ AppExchange URL: https://appexchange.salesforce.com/appxListingDetail?listingId=
 Direct URL: https://login.salesforce.com/packaging/installPackage.apexp?p0=04t6g000008jmIwAAI
 
 Quote Expansion URL: https://login.salesforce.com/packaging/installPackage.apexp?p0=04t6g000008jlcMAAQ
+
+CPQ Expansion URL: https://login.salesforce.com/packaging/installPackage.apexp?p0=04t6g000008jmQ3AAI
+
+
+## Expansions
+
+### CPQ
+
+#### Development
+
+Get install links from https://steelbrick2.force.com/apex/installPremium
+
+#### Build package
+
+Test that it will build
+```
+sfdx force:package:version:create --package "OneGraph GraphQL Subscriptions CPQ Expansion" --skipvalidation --installationkeybypass -v og
+```
+
+Create a beta version
+```
+sfdx force:package:version:create --package "OneGraph GraphQL Subscriptions CPQ Expansion" --codecoverage --installationkeybypass -v og
+```
+Install it in a salesforce org and make sure it works.
+
+Promote it
+```
+sfdx force:package:version:promote -p $pkgversion
+```

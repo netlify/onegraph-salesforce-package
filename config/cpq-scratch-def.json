@@ -1,0 +1,9 @@
+{
+  "edition": "Enterprise",
+  "features": ["CPQ"],
+  "settings": {
+    "quoteSettings": {
+      "enableQuote": true
+    }
+  }
+}
